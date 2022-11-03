@@ -5,7 +5,7 @@ pub fn dissasemble_chunk(chunk: &Chunk, name: &str) {
 
 	  let mut offset = 0usize;
 
-	  while offset < chunk.length() {
+	  while offset < chunk.len() {
 		  offset = disassemble_instruction(chunk, offset);
 	  }
 }
@@ -13,7 +13,7 @@ pub fn dissasemble_chunk(chunk: &Chunk, name: &str) {
 pub fn disassemble_instruction(chunk: &Chunk, offset: usize) -> usize {
 	  print!("{} ", format!("{:0>4}", offset));
 
-	  let instruction = chunk.at(offset);
+	  let instruction = chunk[offset];
 
 	  return match instruction {
 		  OpCode::OpReturn => simple_instruction("OP_RETURN", offset),
