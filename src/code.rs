@@ -1,9 +1,10 @@
+#[derive(Copy, Clone)]
 pub enum OpCode {
 	  OpReturn = 0
 }
 
 pub struct Chunk {
-	  code: Vec<u8>
+	  code: Vec<OpCode>
 }
 
 impl Chunk {
@@ -12,10 +13,14 @@ impl Chunk {
 	  }
 
 	  pub fn write(&mut self, code: OpCode) {
-		  self.code.push(code as u8);
+		  self.code.push(code);
 	  }
 
-	  pub fn count(&self) -> usize {
+	  pub fn length(&self) -> usize {
 		  self.code.len()
+	  }
+
+	  pub fn at(&self, n: usize) -> OpCode {
+		  self.code[n]
 	  }
 }
