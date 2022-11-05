@@ -12,7 +12,7 @@ fn main() {
 	  chunk.write_chunk(OpCode::OpConstant, 1);
 	  chunk.write_chunk(OpCode::_Value(constant), 1);
 
-	  chunk.write_chunk(OpCode::OpReturn, 2);
+	  chunk.write_chunk(OpCode::OpReturn, 1);
 
 	  dissasemble_chunk(&chunk, "test chunk")
 }

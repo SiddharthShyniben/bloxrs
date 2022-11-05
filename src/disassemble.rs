@@ -1,7 +1,7 @@
 use crate::{code::{Chunk, OpCode}, value::Value};
 
 pub fn dissasemble_chunk(chunk: &Chunk, name: &str) {
-	  println!("== {} ==", name);
+	  println!("== {: ^19} ==", name);
 
 	  let mut offset = 0usize;
 
@@ -11,12 +11,12 @@ pub fn dissasemble_chunk(chunk: &Chunk, name: &str) {
 }
 
 pub fn disassemble_instruction(chunk: &Chunk, offset: usize) -> usize {
-	  print!("{} ", format!("{:0>4}", offset));
+	  print!("{:0>4} ", offset);
 
 	  if offset > 0 && chunk.lines[offset] == chunk.lines[offset - 1] {
-		  print!("   | ");
+		  print!("    | ");
 	  } else {
-		  print!("{} ", chunk.lines[offset]);
+		  print!(" {:0>2} | ", chunk.lines[offset]);
 	  }
 
 	  let instruction = chunk.code[offset];
@@ -31,16 +31,16 @@ pub fn disassemble_instruction(chunk: &Chunk, offset: usize) -> usize {
 }
 
 fn simple_instruction(name: &str, offset: usize) -> usize {
-	  print!("{}\n", name);
+	  print!("{: >15}\n", name);
 	  offset + 1
 }
 
 fn constant_instruction(name: &str, chunk: &Chunk, offset: usize) -> usize {
 	  let constant = chunk.code[offset + 1];
+	  print!("{: >15} ", name);
+
 	  if let OpCode::_Value(c) = constant {
-		  print!("{} {:?}: {}\n", name, constant, print_value(chunk.constants[c]));
-	  } else {
-		  print!("{} {:?}: {}\n", name, constant, "NO CONSTANT AAAA");
+		  print!("({:0>3}) {}\n", c, print_value(chunk.constants[c]));
 	  }
 
 	  offset + 2
