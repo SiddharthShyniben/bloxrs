@@ -52,7 +52,6 @@ impl VM {
 						  let value = self.chunk.constants[constant];
 						  self.ip += 1;
 						  self.stack.push(value);
-						  println!("{}", print_value(value));
 					  }
 				  },
 				  _ => return InterpretResult::InterpretRuntimeError
