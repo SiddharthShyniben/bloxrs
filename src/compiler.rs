@@ -1,4 +1,4 @@
-use crate::scanner::{Scanner, TokenType};
+use crate::{scanner::{Scanner, TokenType}, code::Chunk};
 
 pub struct Compiler {}
 
@@ -7,23 +7,7 @@ impl Compiler {
 		  Compiler {}
 	  }
 
-	  pub fn compile(&self, source: String) {
+	  pub fn compile(&self, source: String, chunk: &Chunk) -> bool {
 		  let mut scanner = Scanner::new(source);
-		  let mut line = -1;
-
-		  'tokens: loop {
-		      let token = scanner.scan_token();
-			  if token.line != line {
-				  print!("{:0>3} | ", token.line);
-				  line = token.line;
-			  } else {
-				  print!("    | ");
-			  }
-
-			  print!("{:?}, '{}'", token.token_type, token.start);
-			  if matches!(token.token_type, TokenType::Eof) {
-				  break 'tokens
-			  }
-		  }
 	  }
 }
