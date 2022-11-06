@@ -1,9 +1,10 @@
 mod code;
 mod disassemble;
 mod value;
+mod vm;
 
 use code::{Chunk, OpCode};
-use disassemble::dissasemble_chunk;
+use vm::VM;
 
 fn main() {
 	  let mut chunk = Chunk::new();
@@ -14,5 +15,9 @@ fn main() {
 
 	  chunk.write_chunk(OpCode::OpReturn, 1);
 
-	  dissasemble_chunk(&chunk, "test chunk")
+	  let mut vm = VM::new(chunk);
+	  let res = vm.interpret();
+
+	  #[cfg(debug_assertions)]
+	  println!("Result: {:?}", res);
 }

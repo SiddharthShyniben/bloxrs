@@ -8,6 +8,8 @@ pub fn dissasemble_chunk(chunk: &Chunk, name: &str) {
 	  while offset < chunk.code.len() {
 		  offset = disassemble_instruction(chunk, offset);
 	  }
+
+	  println!("== {: ^19} ==", " ".repeat(name.len()));
 }
 
 pub fn disassemble_instruction(chunk: &Chunk, offset: usize) -> usize {
@@ -46,6 +48,6 @@ fn constant_instruction(name: &str, chunk: &Chunk, offset: usize) -> usize {
 	  offset + 2
 }
 
-fn print_value(value: Value) -> String {
+pub fn print_value(value: Value) -> String {
 	  format!("{}", value)
 }
