@@ -3,6 +3,7 @@ use crate::value::{Values, Value};
 #[derive(Copy, Clone, Debug)]
 pub enum OpCode {
 	  OpConstant,
+	  OpNegate,
 	  OpReturn,
 	  _Value(usize),
 }

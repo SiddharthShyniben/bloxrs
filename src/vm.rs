@@ -43,6 +43,10 @@ impl VM {
 					  println!("{}", print_value(self.stack.pop().unwrap()));
 					  InterpretResult::InterpretOk
 				  },
+				  OpCode::OpNegate => {
+					  let v = self.stack.pop().unwrap();
+					  self.stack.push(-v);
+				  },
 				  OpCode::OpConstant => {
 					  if let OpCode::_Value(constant) = self.chunk.code[self.ip] {
 						  let value = self.chunk.constants[constant];

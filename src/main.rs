@@ -13,7 +13,9 @@ fn main() {
 	  chunk.write_chunk(OpCode::OpConstant, 1);
 	  chunk.write_chunk(OpCode::_Value(constant), 1);
 
-	  chunk.write_chunk(OpCode::OpReturn, 1);
+	  chunk.write_chunk(OpCode::OpNegate, 1);
+
+	  chunk.write_chunk(OpCode::OpReturn, 2);
 
 	  let mut vm = VM::new(chunk);
 	  let res = vm.interpret();

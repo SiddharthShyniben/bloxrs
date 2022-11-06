@@ -24,6 +24,7 @@ pub fn disassemble_instruction(chunk: &Chunk, offset: usize) -> usize {
 	  let instruction = chunk.code[offset];
 	  return match instruction {
 		  OpCode::OpConstant => constant_instruction("OP_CONSTANT", chunk, offset),
+		  OpCode::OpNegate => simple_instruction("OP_NEGATE", offset),
 		  OpCode::OpReturn => simple_instruction("OP_RETURN", offset),
 		  _ => {
 			  print!("Unknown opcode {:?}", instruction);
