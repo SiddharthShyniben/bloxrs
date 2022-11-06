@@ -1,8 +1,12 @@
-use crate::value::{Values, Value};
+use crate::value::{Value, Values};
 
 #[derive(Copy, Clone, Debug)]
 pub enum OpCode {
 	  OpConstant,
+	  OpAdd,
+	  OpSubtract,
+	  OpMultiply,
+	  OpDivide,
 	  OpNegate,
 	  OpReturn,
 	  _Value(usize),
@@ -18,7 +22,11 @@ pub struct Chunk {
 
 impl Chunk {
 	  pub fn new() -> Chunk {
-		  Chunk {code: Code::new(), constants: Values::new(), lines: vec![]}
+		  Chunk {
+			  code: Code::new(),
+			  constants: Values::new(),
+			  lines: vec![],
+		  }
 	  }
 
 	  pub fn write_chunk(&mut self, code: OpCode, line: isize) {

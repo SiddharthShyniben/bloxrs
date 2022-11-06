@@ -1,7 +1,7 @@
 use crate::{
 	  code::{Chunk, OpCode},
-	  disassemble::{print_value, disassemble_instruction},
-	  value::Value
+	  disassemble::{disassemble_instruction, print_value},
+	  value::Value,
 };
 
 pub struct VM {
@@ -19,7 +19,11 @@ pub enum InterpretResult {
 
 impl VM {
 	  pub fn new(chunk: Chunk) -> VM {
-		  VM {chunk, ip: 0, stack: vec![]}
+		  VM {
+			  chunk,
+			  ip: 0,
+			  stack: vec![],
+		  }
 	  }
 
 	  pub fn interpret(&mut self) -> InterpretResult {
@@ -39,22 +43,44 @@ impl VM {
 			  }
 
 			  match instruction {
-				  OpCode::OpReturn => return {
-					  println!("{}", print_value(self.stack.pop().unwrap()));
-					  InterpretResult::InterpretOk
-				  },
+				  OpCode::OpReturn => {
+					  return {
+						  println!("{}", print_value(self.stack.pop().unwrap()));
+						  InterpretResult::InterpretOk
+					  }
+				  }
 				  OpCode::OpNegate => {
 					  let v = self.stack.pop().unwrap();
 					  self.stack.push(-v);
-				  },
+				  }
+				  OpCode::OpAdd => {
+					  let b = self.stack.pop().unwrap();
+					  let a = self.stack.pop().unwrap();
+					  self.stack.push(a + b)
+				  }
+				  OpCode::OpSubtract => {
+					  let b = self.stack.pop().unwrap();
+					  let a = self.stack.pop().unwrap();
+					  self.stack.push(a - b)
+				  }
+				  OpCode::OpMultiply => {
+					  let b = self.stack.pop().unwrap();
+					  let a = self.stack.pop().unwrap();
+					  self.stack.push(a * b)
+				  }
+				  OpCode::OpDivide => {
+					  let b = self.stack.pop().unwrap();
+					  let a = self.stack.pop().unwrap();
+					  self.stack.push(a / b)
+				  }
 				  OpCode::OpConstant => {
 					  if let OpCode::_Value(constant) = self.chunk.code[self.ip] {
 						  let value = self.chunk.constants[constant];
 						  self.ip += 1;
 						  self.stack.push(value);
 					  }
-				  },
-				  _ => return InterpretResult::InterpretRuntimeError
+				  }
+				  _ => return InterpretResult::InterpretRuntimeError,
 			  }
 		  }
 	  }
