@@ -42,10 +42,22 @@ impl Scanner {
 			  '*' => self.make_token(TokenType::Star),
 			  '/' => self.make_token(TokenType::Slash),
 
-			  '!' => self.make_token(if self._match('=') {TokenType::BangEqual} else {TokenType::Bang}),
-			  '=' => self.make_token(if self._match('=') {TokenType::EqualEqual} else {TokenType::Equal}),
-			  '>' => self.make_token(if self._match('=') {TokenType::GreaterEqual} else {TokenType::Greater}),
-			  '<' => self.make_token(if self._match('=') {TokenType::LessEqual} else {TokenType::Less}),
+			  '!' => {
+				  let t = if self._match('=') {TokenType::BangEqual} else {TokenType::Bang};
+				  self.make_token(t)
+			  },
+			  '=' => {
+				  let t = if self._match('=') {TokenType::EqualEqual} else {TokenType::Equal};
+				  self.make_token(t)
+			  },
+			  '>' => {
+				  let t = if self._match('=') {TokenType::GreaterEqual} else {TokenType::Greater};
+				  self.make_token(t)
+			  },
+			  '<' => {
+				  let t = if self._match('=') {TokenType::LessEqual} else {TokenType::Less};
+				  self.make_token(t)
+			  },
 
 			  '"' => self.string(),
 
@@ -53,7 +65,7 @@ impl Scanner {
 		  }
 	  }
 
-	  fn identifier(&self) -> Token {
+	  fn identifier(&mut self) -> Token {
 		  while is_alpha(self.peek()) || is_digit(self.peek()) {
 			  self.advance();
 		  }
@@ -62,10 +74,46 @@ impl Scanner {
 	  }
 
 	  fn identifier_type(&self) -> TokenType {
-		  TokenType::Identifier
+		  match self.code.as_bytes()[self.start] as char {
+			  'a' => self.check_keyword(1, 2, "nd", TokenType::And),
+			  'c' => self.check_keyword(1, 4, "lass", TokenType::Class),
+			  'e' => self.check_keyword(1, 3, "lse", TokenType::Else),
+			  'f' => if self.current - self.start > 1 {
+				  match self.code.as_bytes()[self.start + 1] as char {
+					  'a' => self.check_keyword(2, 3, "lse", TokenType::False),
+					  'o' => self.check_keyword(2, 1, "r", TokenType::For),
+					  'u' => self.check_keyword(2, 1, "n", TokenType::Fun),
+					  _ => TokenType::Identifier
+				  }
+			  } else {TokenType::Identifier}
+			  'i' => self.check_keyword(1, 1, "f", TokenType::If),
+			  'n' => self.check_keyword(1, 2, "il", TokenType::Nil),
+			  'o' => self.check_keyword(1, 1, "r", TokenType::Or),
+			  'p' => self.check_keyword(1, 4, "rint", TokenType::Print),
+			  'r' => self.check_keyword(1, 5, "eturn", TokenType::Return),
+			  's' => self.check_keyword(1, 4, "uper", TokenType::Super),
+			  't' => if self.current - self.start > 1 {
+				  match self.code.as_bytes()[self.start + 1] as char {
+					  'h' => self.check_keyword(2, 2, "is", TokenType::This),
+					  'r' => self.check_keyword(2, 2, "ue", TokenType::True),
+					  _ => TokenType::Identifier
+				  }
+			  } else {TokenType::Identifier}
+			  'v' => self.check_keyword(1, 2, "ar", TokenType::Var),
+			  'w' => self.check_keyword(1, 4, "hile", TokenType::While),
+			  _ => TokenType::Identifier
+		  }
 	  }
 
-	  fn string(&self) -> Token {
+	  fn check_keyword(&self, start: usize, length: usize, rest: &str, token_type: TokenType) -> TokenType {
+		  if self.current - self.start == start + length && &self.code[self.start + 1..self.start + 1 + length] == rest {
+			  token_type
+		  } else {
+			  TokenType::Identifier
+		  }
+	  }
+
+	  fn string(&mut self) -> Token {
 		  while self.peek() != '"' && !self.is_at_end() {
 			  if self.peek() == '\n' {
 				  self.line += 1;
@@ -85,7 +133,7 @@ impl Scanner {
 		  }
 	  }
 
-	  fn number(&self) -> Token {
+	  fn number(&mut self) -> Token {
 		  while is_digit(self.peek()) {
 			  self.advance();
 		  }
@@ -127,13 +175,13 @@ impl Scanner {
 		  }
 	  }
 
-	  fn advance(&self) -> char {
+	  fn advance(&mut self) -> char {
 		  self.current += 1;
 		  self.column += 1;
 		  self.code.as_bytes()[self.current - 1] as char
 	  }
 
-	  fn _match(&self, c: char) -> bool {
+	  fn _match(&mut self, c: char) -> bool {
 		  if self.is_at_end() {
 			  false
 		  } else if self.code.as_bytes()[self.current - 1] as char != c {
@@ -145,7 +193,7 @@ impl Scanner {
 		  }
 	  }
 
-	  fn skip_whitespace(&self) {
+	  fn skip_whitespace(&mut self) {
 		  loop {
 			  let c = self.peek();
 			  match c {

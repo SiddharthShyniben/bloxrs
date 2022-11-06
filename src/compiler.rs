@@ -8,7 +8,7 @@ impl Compiler {
 	  }
 
 	  pub fn compile(&self, source: String) {
-		  let scanner = Scanner::new(source);
+		  let mut scanner = Scanner::new(source);
 		  let mut line = -1;
 
 		  'tokens: loop {

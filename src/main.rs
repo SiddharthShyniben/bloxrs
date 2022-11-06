@@ -5,10 +5,8 @@ mod vm;
 mod compiler;
 mod scanner;
 
-use code::{Chunk, OpCode};
 use promptly::prompt;
 use vm::{VM, InterpretResult};
-use crate::disassemble::dissasemble_chunk;
 
 use std::{env, process, fs};
 
@@ -26,7 +24,7 @@ fn main() {
 }
 
 fn repl() {
-	  let vm = VM::new();
+	  let mut vm = VM::new();
 	  loop {
 		  let line: String = prompt("::").unwrap();
 		  println!("{:?}", line);
@@ -38,7 +36,7 @@ fn run_file(file: &String) {
 	  let contents = fs::read_to_string(file)
 		  .expect("Should have been able to read the file");
 
-	  let vm = VM::new();
+	  let mut vm = VM::new();
 	  let result = vm.interpret(contents);
 
 	  match result {
